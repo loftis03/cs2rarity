@@ -1,5 +1,5 @@
 volumes:
-  fastapi-example-data:
+  cs2rarity:
     external: true
 services:
   api:
@@ -7,20 +7,24 @@ services:
       context: ./api
       dockerfile: Dockerfile.dev
     environment:
-      DATABASE_URL: postgresql://example_user:secret@db/example
+      CORS_HOST: http://localhost:3000
+      SIGNING_KEY: ${SIGNING_KEY}
       WAIT_HOSTS: db:5432
+      WAIT_BEFORE: 5
+      WAIT_TIMEOUT: 60
       PORT: 8000
+      DATABASE_URL: postgresql://cs2rarityadmin:cs2raritypassword@db/cs2rarity
     ports:
       - "8000:8000"
     volumes:
       - ./api:/app
   db:
-    image: postgres:14.5-bullseye
+    image: postgres:16.1-bullseye
     environment:
-      POSTGRES_PASSWORD: secret
-      POSTGRES_USER: example_user
-      POSTGRES_DB: example
+      POSTGRES_PASSWORD: cs2raritypassword
+      POSTGRES_USER: cs2rarityadmin
+      POSTGRES_DB: cs2rarity
     ports:
       - "15432:5432"
     volumes:
-      - fastapi-example-data:/var/lib/postgresql/data
+      - cs2rarity:/var/lib/postgresql/data
