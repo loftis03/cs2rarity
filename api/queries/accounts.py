@@ -12,7 +12,7 @@ class AccountQueries:
             with conn.cursor() as db:
                 result = db.execute(
                     """
-                    SELECT id, email, username, password, profile_picture, created_at
+                    SELECT id, email, username, password_hash, profile_pic, created_at
                     FROM accounts
                     WHERE username = %s
                     """,
@@ -39,7 +39,7 @@ class AccountQueries:
                 result = db.execute(
                     """
                     INSERT INTO accounts
-                    (email, username, password, profile_picture, created_at)
+                    (email, username, password_hash, profile_pic)
                     VALUES (%s, %s, %s, %s)
                     RETURNING id;
                     """,
