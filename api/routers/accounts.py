@@ -64,3 +64,12 @@ async def get_protected(
     account_data: dict = Depends(authenticator.get_current_account_data),
 ):
     return True
+
+
+@router.get("/api/accounts/{account_id}")
+async def get_account_id(
+    account_id: int,
+    account_data: dict = Depends(authenticator.get_current_account_data),
+    queries: AccountQueries = Depends()
+):
+    return queries.get_single_account(account_id)

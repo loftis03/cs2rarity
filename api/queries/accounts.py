@@ -2,6 +2,7 @@ from queries.pool import pool
 from models.accounts import (
     AccountOutWithPassword,
     AccountIn,
+    AccountOut,
     DuplicateAccountError,
 )
 
@@ -56,3 +57,28 @@ class AccountQueries:
                     raise DuplicateAccountError
                 props["hashed_password"] = hashed_password
                 return AccountOutWithPassword(id=id, **props)
+
+    def get_single_account(
+        self, account_id: int
+    ) -> AccountOut:
+        with pool.connection() as conn:
+            with conn.cursor() as db:
+                db.execute(
+                    """
+                    SELECT id, username, email, profile_pic, created_at
+                    FROM accounts
+                    WHERE id = %s
+                    """,
+                    [account_id],
+                )
+                data = db.fetchone()
+                if data is None:
+                    return None
+                print(data)
+                return AccountOut(
+                    id=data[0],
+                    username=data[1],
+                    email=data[2],
+                    profile_picture=data[3] or "",
+                    created_at=data[4]
+                )
