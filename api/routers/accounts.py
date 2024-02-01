@@ -18,7 +18,10 @@ from models.accounts import (
     AccountIn,
     AccountOutWithPassword,
     HttpError,
+    AccountOut
 )
+
+from typing import List
 
 
 router = APIRouter()
@@ -73,3 +76,9 @@ async def get_account_id(
     queries: AccountQueries = Depends()
 ):
     return queries.get_single_account(account_id)
+
+@router.get("/api/acccounts", response_model=List[AccountOut])
+async def get_all_accounts(
+    queries: AccountQueries = Depends()
+):
+    return queries.get_all_accounts()

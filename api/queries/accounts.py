@@ -82,3 +82,27 @@ class AccountQueries:
                     profile_picture=data[3] or "",
                     created_at=data[4]
                 )
+
+    def get_all_accounts(
+            self,
+    ) -> AccountOut:
+        with pool.connection() as conn:
+            with conn.cursor() as db:
+                db.execute(
+                    """
+                    SELECT id, username, email, profile_pic, created_at, password_hash
+                    FROM accounts
+                    """,
+                )
+                result = []
+                for account in db:
+                    accounts = AccountOut(
+                        id=account[0],
+                        username=account[1],
+                        email=account[2],
+                        profile_picture=account[3],
+                        created_at=account[4],
+                        password_hash=account[5],
+                        )
+                    result.append(accounts)
+                return result
