@@ -82,3 +82,11 @@ async def get_all_accounts(
     queries: AccountQueries = Depends()
 ):
     return queries.get_all_accounts()
+
+@router.put("/api/account")
+async def update_specific_account(
+    account: AccountIn,
+    queries: AccountQueries = Depends(),
+    account_data: dict = Depends(authenticator.get_current_account_data),
+):
+    return queries.update_account(account, account_data)

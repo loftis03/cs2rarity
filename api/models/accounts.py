@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from jwtdown_fastapi.authentication import Token
 from datetime import datetime
 

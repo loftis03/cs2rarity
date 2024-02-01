@@ -106,3 +106,30 @@ class AccountQueries:
                         )
                     result.append(accounts)
                 return result
+
+    def update_account(
+            self, account: AccountIn, account_data=dict,
+    ) -> AccountOut:
+        logged_in_account_id = account_data["id"]
+        with pool.connection() as conn:
+            with conn.cursor() as db:
+                db.execute(
+                    """
+                        UPDATE accounts
+                        SET email = %s
+                        , username = %s
+                        , password_hash = %s
+                        , profile_pic = %s
+                        WHERE id = %s
+                    """,
+                [
+                    account.email,
+                    account.username,
+                    account.password,
+                    account.profile_picture,
+                    logged_in_account_id,
+                ],
+            )
+            props = account.dict()
+           # props["id"] = logged_in_account_id
+            return AccountOut(id=logged_in_account_id, **props)
