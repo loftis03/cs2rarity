@@ -18,7 +18,7 @@ from models.accounts import (
     AccountIn,
     AccountOutWithPassword,
     HttpError,
-    AccountOut
+    # AccountOut
 )
 
 from typing import List
@@ -77,7 +77,7 @@ async def get_account_id(
 ):
     return queries.get_single_account(account_id)
 
-@router.get("/api/acccounts", response_model=List[AccountOut])
+@router.get("/api/acccounts", response_model=List[AccountOutWithPassword])
 async def get_all_accounts(
     queries: AccountQueries = Depends()
 ):
@@ -89,4 +89,13 @@ async def update_specific_account(
     queries: AccountQueries = Depends(),
     account_data: dict = Depends(authenticator.get_current_account_data),
 ):
-    return queries.update_account(account, account_data)
+    hashed_password = authenticator.hash_password(account.password)
+    try:
+        info = queries.update_account(account, hashed_password, account_data)
+    except DuplicateAccountError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot update an account with those credentials",
+        )
+    # return queries.update_account(info, hashed_password, account_data)
+    return info

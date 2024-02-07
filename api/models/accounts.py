@@ -20,6 +20,7 @@ class AccountOut(BaseModel):
     email: str
     username: str
     profile_picture: str
+    # created_at: datetime
 
 
 class AccountOutWithPassword(AccountOut):

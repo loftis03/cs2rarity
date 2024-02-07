@@ -13,7 +13,8 @@ class AccountQueries:
             with conn.cursor() as db:
                 result = db.execute(
                     """
-                    SELECT id, email, username, password_hash, profile_pic, created_at
+                    SELECT id, email, username, password_hash,
+                    profile_pic, created_at
                     FROM accounts
                     WHERE username = %s
                     """,
@@ -85,31 +86,33 @@ class AccountQueries:
 
     def get_all_accounts(
             self,
-    ) -> AccountOut:
+    ) -> AccountOutWithPassword:
         with pool.connection() as conn:
             with conn.cursor() as db:
                 db.execute(
                     """
-                    SELECT id, username, email, profile_pic, created_at, password_hash
+                    SELECT id, username, email, profile_pic,
+                    created_at, password_hash
                     FROM accounts
                     """,
                 )
                 result = []
                 for account in db:
-                    accounts = AccountOut(
+                    accounts = AccountOutWithPassword(
                         id=account[0],
                         username=account[1],
                         email=account[2],
                         profile_picture=account[3],
                         created_at=account[4],
-                        password_hash=account[5],
+                        hashed_password=account[5],
                         )
                     result.append(accounts)
                 return result
 
     def update_account(
-            self, account: AccountIn, account_data=dict,
-    ) -> AccountOut:
+            self, account: AccountIn, hashed_password: str,
+            account_data=dict,
+    ) -> AccountOutWithPassword:
         logged_in_account_id = account_data["id"]
         with pool.connection() as conn:
             with conn.cursor() as db:
@@ -125,11 +128,15 @@ class AccountQueries:
                 [
                     account.email,
                     account.username,
-                    account.password,
+                    hashed_password,
                     account.profile_picture,
                     logged_in_account_id,
                 ],
             )
             props = account.dict()
+            # if self.get(props["username"]):
+            #     raise DuplicateAccountError
+            props["hashed_password"] = hashed_password
            # props["id"] = logged_in_account_id
-            return AccountOut(id=logged_in_account_id, **props)
+            # return AccountOut(id=logged_in_account_id, **props)
+            return AccountOutWithPassword(id=logged_in_account_id, **props)
