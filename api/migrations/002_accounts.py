@@ -7,7 +7,7 @@ steps = [
             email VARCHAR(255) UNIQUE NOT NULL,
             password_hash VARCHAR(255) NOT NULL,
             profile_pic VARCHAR(255) DEFAULT 'default_profile_pic.jpg',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            created_at VARCHAR(255) DEFAULT CURRENT_TIMESTAMP NOT NULL
         );
         """,
         """

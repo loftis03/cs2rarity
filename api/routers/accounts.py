@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import (
     Depends,
     HTTPException,
@@ -34,9 +35,10 @@ async def create_account(
     response: Response,
     accounts: AccountQueries = Depends(),
 ):
+    created_at = datetime.now().isoformat()
     hashed_password = authenticator.hash_password(info.password)
     try:
-        account = accounts.create(info, hashed_password)
+        account = accounts.create(info, hashed_password, created_at)
     except DuplicateAccountError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

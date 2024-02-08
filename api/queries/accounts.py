@@ -1,4 +1,5 @@
 from queries.pool import pool
+from datetime import datetime
 from models.accounts import (
     AccountOutWithPassword,
     AccountIn,
@@ -34,7 +35,7 @@ class AccountQueries:
                 )
 
     def create(
-        self, info: AccountIn, hashed_password: str
+        self, info: AccountIn, hashed_password: str, created_at: str
     ) -> AccountOutWithPassword:
         with pool.connection() as conn:
             with conn.cursor() as db:
@@ -57,6 +58,7 @@ class AccountQueries:
                 if self.get(props["username"]):
                     raise DuplicateAccountError
                 props["hashed_password"] = hashed_password
+                props["created_at"] = created_at
                 return AccountOutWithPassword(id=id, **props)
 
     def get_single_account(
@@ -106,6 +108,7 @@ class AccountQueries:
                         created_at=account[4],
                         hashed_password=account[5],
                         )
+
                     result.append(accounts)
                 return result
 
@@ -125,18 +128,15 @@ class AccountQueries:
                         , profile_pic = %s
                         WHERE id = %s
                     """,
-                [
-                    account.email,
-                    account.username,
-                    hashed_password,
-                    account.profile_picture,
-                    logged_in_account_id,
-                ],
-            )
+                    [
+                        account.email,
+                        account.username,
+                        hashed_password,
+                        account.profile_picture,
+                        logged_in_account_id,
+                    ],
+                )
             props = account.dict()
-            # if self.get(props["username"]):
-            #     raise DuplicateAccountError
             props["hashed_password"] = hashed_password
-           # props["id"] = logged_in_account_id
-            # return AccountOut(id=logged_in_account_id, **props)
+            props["created_at"] = self.get_single_account(logged_in_account_id).created_at
             return AccountOutWithPassword(id=logged_in_account_id, **props)
