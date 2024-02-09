@@ -2,12 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from authenticator import authenticator
-from routers import accounts
+from routers import accounts, skins
 
 
 app = FastAPI()
 app.include_router(authenticator.router, tags=["Auth"])
 app.include_router(accounts.router, tags=["Accounts"])
+app.include_router(skins.router, tags=["Skins"])
 
 origins = [
     "http://localhost:3000",
@@ -26,5 +27,3 @@ app.add_middleware(
 @app.get("/")
 def home():
     return True
-
-

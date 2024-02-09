@@ -1,4 +1,26 @@
-# from pydantic import BaseModel, Field
-# from jwtdown_fastapi.authentication import Token
+from pydantic import BaseModel
+from jwtdown_fastapi.authentication import Token
 
-# class Skin
+
+class SkinOut(BaseModel):
+    id: str
+    name: str
+    description: str
+    weapon: str
+    pattern: str
+    min_float: float
+    max_float: float
+    rarity: str
+    image: str
+
+
+class SkinIn(BaseModel):
+    id: str
+    name: str
+    description: str
+    weapon: str
+    pattern: str
+    min_float: float
+    max_float: float
+    rarity: str
+    image: str
