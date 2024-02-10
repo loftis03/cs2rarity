@@ -38,7 +38,8 @@ class SkinQueries:
             for dict in skins:
                 empty_dict["id"] = dict["id"]
                 empty_dict["name"] = dict["name"]
-                empty_dict["image"] = dict["image"]
+                if "image" in dict:
+                    empty_dict["image"] = dict["image"]
                 empty_list.append(empty_dict)
                 empty_dict = {}
             return empty_list
