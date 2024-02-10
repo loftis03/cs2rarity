@@ -13,5 +13,9 @@ async def get_all_skins(queries: SkinQueries = Depends()):
 @router.get("/api/skins/{skin_id}", response_model=dict)
 def get_skin_id(skin_id: str, queries: SkinQueries = Depends()):
     potatoe = queries.get_skin_id(skin_id)
-    print(potatoe, "THIS IS POTATOE")
     return potatoe
+
+
+@router.get("/api/names")
+async def get_all_names(queries: SkinQueries = Depends()):
+    return queries.get_all_skin_names()
