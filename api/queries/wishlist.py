@@ -48,3 +48,21 @@ class WishlistQueries:
                     for row in rows
                 ]
                 return wishlists
+
+    def delete_wishlist(self, wishlist_id: int, account_data: dict,) -> bool:
+        try:
+            logged_in_account_id = account_data["id"]
+            with pool.connection() as conn:
+                with conn.cursor() as db:
+                    db.execute(
+                        """
+                        DELETE FROM wishlist
+                        WHERE id = %s AND account_id = %s;
+                        """,
+                        [wishlist_id, logged_in_account_id],
+                    )
+
+            return True
+        except Exception as e:
+            print(e)
+            return False
