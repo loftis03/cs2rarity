@@ -1,6 +1,6 @@
 import requests
 import os
-from models.wishlist import WishlistIn, WishlistOut
+from models.wishlist import WishlistIn, WishlistOut, WishlistSkinIn, WishlistSkinOut
 from queries.pool import pool
 from typing import Optional, List
 
@@ -66,3 +66,49 @@ class WishlistQueries:
         except Exception as e:
             print(e)
             return False
+
+    def add_skin_to_wishlist(
+        self, wishlist_skin: WishlistSkinIn, wishlist_id: int, account_data: dict
+    ) -> Optional[WishlistSkinOut]:
+
+        with pool.connection()as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    """
+                    INSERT INTO wishlist_skins (skin_id, wishlist_id)
+                    VALUES (%s, %s)
+                    RETURNING id;
+                    """,
+                    (wishlist_skin.skin_id, wishlist_id),
+                )
+                new_id = cursor.fetchone()[0]
+                new_skin = WishlistSkinOut(
+                    id=new_id,
+                    skin_id=wishlist_skin.skin_id,
+                    wishlist_id=wishlist_id,
+                )
+                return new_skin
+
+    def get_all_skins_in_wishlist(
+        self, wishlist_id: int, account_data: dict
+    ) -> List[WishlistSkinOut]:
+        with pool.connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT id, skin_id, wishlist_id
+                    FROM wishlist_skins
+                    WHERE wishlist_id = %s;
+                    """,
+                    [wishlist_id],
+                )
+
+                result = []
+                for skin in cursor:
+                    skins = WishlistSkinOut(
+                        id=skin[0],
+                        skin_id=skin[1],
+                        wishlist_id=skin[2]
+                    )
+                    result.append(skins)
+                return result

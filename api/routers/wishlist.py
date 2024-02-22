@@ -7,7 +7,7 @@ from fastapi import (
     Request,
 )
 # from typing import List
-from models.wishlist import WishlistIn, WishlistOut
+from models.wishlist import WishlistIn, WishlistOut, WishlistSkinIn, WishlistSkinOut
 from authenticator import authenticator
 from queries.wishlist import WishlistQueries
 from typing import List
@@ -43,3 +43,22 @@ def delete_wishlist(
     queries: WishlistQueries = Depends(),
 ):
     return queries.delete_wishlist(wishlist_id, account_data)
+
+
+@router.post("/api/wishlists/{wishlist_id}/skins", response_model=WishlistSkinOut)
+def add_skin(
+    wishlist_skin: WishlistSkinIn,
+    wishlist_id: int,
+    account_data: dict = Depends(authenticator.get_current_account_data),
+    queries: WishlistQueries = Depends()
+):
+    return queries.add_skin_to_wishlist(wishlist_skin, wishlist_id, account_data)
+
+
+@router.get("/api/wishlists/{wishlist_id}/skins", response_model=List[WishlistSkinOut])
+def get_all_skins(
+    wishlist_id: int,
+    account_data: dict = Depends(authenticator.get_current_account_data),
+    queries: WishlistQueries = Depends()
+):
+    return queries.get_all_skins_in_wishlist(wishlist_id, account_data)
