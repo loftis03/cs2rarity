@@ -62,3 +62,13 @@ def get_all_skins(
     queries: WishlistQueries = Depends()
 ):
     return queries.get_all_skins_in_wishlist(wishlist_id, account_data)
+
+
+@router.delete("/api/wishlists/{wishlist_id}/skins/{id}", response_model=bool)
+def delete_skin(
+    wishlist_id: int,
+    id: int,
+    account_data: dict = Depends(authenticator.get_current_account_data),
+    queries: WishlistQueries = Depends()
+):
+    return queries.remove_skin_from_wishlist(wishlist_id, id, account_data)

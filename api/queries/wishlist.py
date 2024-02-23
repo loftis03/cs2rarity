@@ -112,3 +112,24 @@ class WishlistQueries:
                     )
                     result.append(skins)
                 return result
+
+    def remove_skin_from_wishlist(
+            self, wishlist_id: int, id: int, account_data: dict
+    ) -> bool:
+        try:
+            logged_in_account_id = account_data["id"]
+            with pool.connection() as conn:
+                with conn.cursor() as cursor:
+                    cursor.execute(
+                        """
+                        DELETE FROM wishlist_skins
+                        WHERE wishlist_id = %s
+                        AND id = %s
+                        AND wishlist_id IN (SELECT id FROM wishlist WHERE account_id = %s)
+                        """,
+                        [wishlist_id, id, logged_in_account_id],
+                    )
+            return True
+        except Exception as e:
+            print(e)
+            return False
