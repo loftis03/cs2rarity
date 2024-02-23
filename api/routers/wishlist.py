@@ -72,3 +72,12 @@ def delete_skin(
     queries: WishlistQueries = Depends()
 ):
     return queries.remove_skin_from_wishlist(wishlist_id, id, account_data)
+
+@router.put("/api/wishlists/{wishlist_id}/", response_model=WishlistOut)
+def update_wishlist_name(
+    wishlist_id: int,
+    updated_name: str,
+    account_data: dict = Depends(authenticator.get_current_account_data),
+    queries: WishlistQueries = Depends()
+):
+    return queries.update_wishlist_name(wishlist_id, updated_name, account_data)
