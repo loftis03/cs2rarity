@@ -28,20 +28,23 @@ class InventoryQueries:
                 ]
                 return inventory
 
-    def create_inventory(self, inventory: InventoryIn, account_id: int) -> Optional[InventoryOut]:
+    def create_inventory(
+            self, inventory: InventoryIn, account_id: int
+        ) -> Optional[InventoryOut]:
         with pool.connection() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(
                     """
-                    INSERT INTO inventory (account_id)
-                    VALUES(%s)
+                    INSERT INTO inventory (name, account_id)
+                    VALUES(%s, %s)
                     RETURNING id;
                     """,
-                    (account_id,),
+                    (inventory.name, account_id),
                 )
                 inventory_id = cursor.fetchone()[0]
                 new_inventory = InventoryOut(
                     id=inventory_id,
+                    name=inventory.name,
                     account_id=account_id,
                 )
-            return new_inventory
+                return new_inventory

@@ -2,9 +2,21 @@ from pydantic import BaseModel
 
 
 class InventoryIn(BaseModel):
-    account_id: int
+    name: str = "Inventory"
 
 
 class InventoryOut(BaseModel):
-    id: int
     account_id: int
+    name: str
+    id: int
+
+
+class InventorySkinIn(BaseModel):
+    skin_id: str
+    inventory_id: int
+
+
+class InventorySkinOut(BaseModel):
+    id: int
+    skin_id: str
+    inventory_id: int
