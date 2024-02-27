@@ -70,7 +70,7 @@ class WishlistQueries:
     def add_skin_to_wishlist(
         self, wishlist_skin: WishlistSkinIn, wishlist_id: int, account_data: dict
     ) -> Optional[WishlistSkinOut]:
-        
+
         with pool.connection()as conn:
             with conn.cursor() as cursor:
                 cursor.execute(
@@ -133,7 +133,7 @@ class WishlistQueries:
         except Exception as e:
             print(e)
             return False
-        
+
     def update_wishlist_name(
             self, wishlist_id: int, updated_name: str, account_data: dict
     ) -> Optional[WishlistOut]:
