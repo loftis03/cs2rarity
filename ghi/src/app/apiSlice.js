@@ -5,4 +5,11 @@ export const CS2Rarity = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: process.env.REACT_APP_API_HOST,
     }),
+    endpoints: () => ({
+
+    })
+
+
+
+
 })
