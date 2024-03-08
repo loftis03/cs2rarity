@@ -48,6 +48,14 @@ export const CS2Rarity = createApi({
             }),
             invalidatesTags: ["Account"],
           }),
+
+          getLoggedInProfile: builder.query({
+            query: () => ({
+                url: '/profile',
+                credentials: "include",
+            }),
+            providesTags: ["Profiles"],
+          }),
       
     })
 });
@@ -57,4 +65,5 @@ export const {
     useLoginMutation,
     useLogoutMutation,
     useSignupMutation,
+    useGetLoggedInProfileQuery,
 } = CS2Rarity;
