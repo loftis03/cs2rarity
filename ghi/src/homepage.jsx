@@ -8,7 +8,7 @@ const HomePage = () => {
         <>
         <div>
         <h1>
-            "SOMETHING SHOULD RENDER HERE"
+            "SOMETHING SHOULD RENDER HERE!"
         </h1>
         </div>
 
