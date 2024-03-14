@@ -3,7 +3,8 @@ import HomePageRedirectRoutes from "./HomePageRedirectRoutes.js";
 import HomePage from "./homepage.jsx";
 import LoginForm from "./LoginForm.jsx";
 import SignupPage from "./SignupPage.jsx";
-import Nav from "./Nav";
+import SkinDetail from "./SkinDetail.jsx";
+import Nav from "./Nav.js";
 import MyPage from "./MyPage.jsx";
 import ProtectedRoutes from "./ProtectedRoutes.js";
 // import "./App.css";
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/login" element={<HomePageRedirectRoutes child={<LoginForm />} />}/>
         <Route path="/signup/" element={<HomePageRedirectRoutes child={<SignupPage />} />}/>
         <Route path="/mypage/" element={<ProtectedRoutes child={<MyPage />} />}/>
+        <Route path="/skins/:id" element={<SkinDetail />}/>
       </Routes>
     </BrowserRouter>
   );

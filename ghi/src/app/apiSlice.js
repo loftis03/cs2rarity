@@ -38,7 +38,7 @@ export const CS2Rarity = createApi({
             }),
             invalidatesTags: ["Account"],
           }),
-      
+
           signup: builder.mutation({
             query: (body) => ({
               url: "api/accounts",
@@ -56,7 +56,16 @@ export const CS2Rarity = createApi({
             }),
             providesTags: ["Profiles"],
           }),
-      
+
+
+        getSkinList: builder.query({
+            query: () => "/api/names",
+            transformResponse: (response) => response,
+          }),
+
+        getSkinDetails: builder.query({
+            query: (skin_id) => `/api/skins/${skin_id}`,
+        }),
     })
 });
 
@@ -66,4 +75,6 @@ export const {
     useLogoutMutation,
     useSignupMutation,
     useGetLoggedInProfileQuery,
+    useGetSkinListQuery,
+    useGetSkinDetailsQuery,
 } = CS2Rarity;
