@@ -7,6 +7,7 @@ import SkinDetail from "./SkinDetail.jsx";
 import Nav from "./Nav.js";
 import MyPage from "./MyPage.jsx";
 import ProtectedRoutes from "./ProtectedRoutes.js";
+import YourProfilePage from "./ProfilePage.jsx";
 // import "./App.css";
 // import Nav from "./nav.js";
 
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/login" element={<HomePageRedirectRoutes child={<LoginForm />} />}/>
         <Route path="/signup/" element={<HomePageRedirectRoutes child={<SignupPage />} />}/>
         <Route path="/mypage/" element={<ProtectedRoutes child={<MyPage />} />}/>
+        <Route path="/yourpage/" element={<ProtectedRoutes child={<YourProfilePage />} />}/>
         <Route path="/skins/:id" element={<SkinDetail />}/>
       </Routes>
     </BrowserRouter>

@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { useSignupMutation } from "./app/apiSlice";
+import { useSignupMutation, useCreateUserInventoryMutation } from "./app/apiSlice";
 import { useNavigate, Link } from "react-router-dom";
+import { create } from "@reduxjs/toolkit";
 
 const SignupPage = () => {
   const [signup] = useSignupMutation();
+  const [CreateUserInventory] = useCreateUserInventoryMutation();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -17,6 +19,7 @@ const SignupPage = () => {
     } else {
       try {
         await signup({ email, username, password }).unwrap();
+        await CreateUserInventory({ name: "inventory" });
         setTimeout(() => {
           navigate("/");
         }, 50);
