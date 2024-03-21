@@ -68,8 +68,13 @@ export const CS2Rarity = createApi({
         }),
 
         getUserInventorySkins: builder.query({
-          query: (inventory_id) => `/api/inventory/${inventory_id}/skins`,
+          query: (inventory_id) => ({
+            url: `/api/inventory/${inventory_id}/skins`,
+            credentials: "include",
         }),
+        providesTags: ["inventory"]
+        }),
+
         createUserInventory: builder.mutation({
           query: (data) => ({
             url: "/api/inventory/",
@@ -78,7 +83,16 @@ export const CS2Rarity = createApi({
             credentials: "include",
           }),
           invalidatesTags: ["inventory"]
-        })
+        }),
+
+        getUserInventory: builder.query({
+            query: () => ({
+                url: `/api/inventory`,
+                credentials: "include"
+
+        }),
+        providesTags: ["inventory"]
+          }),
     })
 });
 
@@ -92,4 +106,5 @@ export const {
     useGetSkinDetailsQuery,
     useGetUserInventorySkinsQuery,
     useCreateUserInventoryMutation,
+    useGetUserInventoryQuery,
 } = CS2Rarity;
