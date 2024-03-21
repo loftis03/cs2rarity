@@ -64,7 +64,10 @@ export const CS2Rarity = createApi({
           }),
 
         getSkinDetails: builder.query({
-            query: (skin_id) => `/api/skins/${skin_id}`,
+            query: (skin_id) => ({
+                url: `/api/skins/${skin_id}`,
+                mode: "no-cors"
+        })
         }),
 
         getUserInventorySkins: builder.query({

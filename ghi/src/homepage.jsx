@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const HomePage = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10; 
+    const itemsPerPage = 10;
     const searchCriteria = useSelector((state) => state.search.value);
     const { data, isLoading, isError } = useGetSkinListQuery();
 
@@ -43,6 +43,7 @@ const HomePage = () => {
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
+    console.log(paginatedData)
 
     return (
         <div className="container">
