@@ -96,7 +96,21 @@ export const CS2Rarity = createApi({
         }),
         providesTags: ["inventory"]
           }),
-    })
+
+        getFilteredSkinDetails: builder.query({
+        query: (skin_list) => ({
+            url: `/api/filtered`, // Endpoint URL
+            method: 'POST',  // Use POST method
+            body: skin_list, // Send skin_list in the request body
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+
+        }),
+    }),
+
+
 });
 
 export const {
@@ -110,4 +124,5 @@ export const {
     useGetUserInventorySkinsQuery,
     useCreateUserInventoryMutation,
     useGetUserInventoryQuery,
+    useGetFilteredSkinDetailsQuery,
 } = CS2Rarity;

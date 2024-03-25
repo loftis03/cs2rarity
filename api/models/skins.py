@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from jwtdown_fastapi.authentication import Token
+from typing import List
 
 
 class SkinOut(BaseModel):
@@ -24,3 +25,7 @@ class SkinIn(BaseModel):
     max_float: float
     rarity: str
     image: str
+
+
+class SkinList(BaseModel):
+    skin_list: List[str]

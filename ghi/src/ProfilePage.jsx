@@ -1,81 +1,67 @@
 import { useEffect, useState } from "react";
-import { useGetLoggedInProfileQuery, useGetUserInventorySkinsQuery, useGetUserInventoryQuery, useGetSkinDetailsQuery } from "./app/apiSlice";
+import { useGetLoggedInProfileQuery, useGetUserInventorySkinsQuery, useGetUserInventoryQuery, useGetFilteredSkinDetailsQuery } from "./app/apiSlice";
 
 const YourProfilePage = () => {
-
     const [profile, setProfile] = useState(null);
-    const [inventoryID, setInventoryID] = useState("")
-    const [skinID, setSkinID] = useState("")
-    const { data: yourLoggedInProfile, error, isLoading: profileLoading } = useGetLoggedInProfileQuery();
+    const [inventoryID, setInventoryID] = useState("");
+    const [skinID, setSkinID] = useState([]);
+
+    const { data: yourLoggedInProfile, isLoading: profileLoading } = useGetLoggedInProfileQuery();
     const { data: inventoryStuff, isLoading: inventoryLoading } = useGetUserInventoryQuery();
     const { data: skinStuff, isLoading: skinLoading } = useGetUserInventorySkinsQuery(inventoryID);
-    const { data: skinDetailStuff, isLoading: skinDetailLoading } = useGetSkinDetailsQuery(skinID)
-
-
+    const { data: skinDetailStuff, isLoading: skinDetailLoading, isFetching } = useGetFilteredSkinDetailsQuery({ "skin_list": skinID });
 
     useEffect(() => {
-        if (!profileLoading && yourLoggedInProfile) {
+        if (yourLoggedInProfile && !profileLoading) {
             setProfile(yourLoggedInProfile);
         }
+    }, [yourLoggedInProfile, profileLoading]);
 
-        if (!inventoryLoading && inventoryStuff && inventoryStuff.length > 0) {
-            setInventoryID(inventoryStuff[0].id)
-            console.log("This is inventory stuff", inventoryStuff[0].id)
-
+    useEffect(() => {
+        if (inventoryStuff && !inventoryLoading && inventoryStuff.length > 0) {
+            setInventoryID(inventoryStuff[0].id);
         }
+    }, [inventoryStuff, inventoryLoading]);
 
-        if (!skinLoading && skinStuff && skinStuff.length > 0) {
-            const ids = skinStuff.map((skin) => skin.skin_id)
-
-            setSkinID(ids.map((skin) => skin));
-            console.log("this is ids", ids)
-
+    useEffect(() => {
+        if (inventoryID && skinStuff && !skinLoading && skinStuff.length > 0) {
+            const ids = skinStuff.map(skin => skin.skin_id);
+            setSkinID(ids);
         }
+    }, [inventoryID, skinStuff, skinLoading]);
 
-        console.log("This is also inventory stuff", inventoryStuff)
-        console.log("This is skin detail stuff look here", skinDetailStuff)
-        console.log(skinID)
+    useEffect(() => {
+        console.log("Skin IDs:", skinID);
+        console.log("Skin Details:", skinDetailStuff);
+    }, [skinID, skinDetailStuff]);
 
-    }, [profileLoading, yourLoggedInProfile, inventoryLoading, inventoryStuff]);
-
-    const handleLoop = (e) => {
-        e.preventDefault();
-
-    }
-
-
-    if (profileLoading || skinLoading || inventoryLoading || !skinStuff || !skinDetailStuff) {
+    if (profileLoading || inventoryLoading || skinLoading || skinDetailLoading || !skinDetailStuff) {
         return <progress className="progress is-primary" max="100"></progress>;
     }
 
-
-  return (
-    <div>
-        <h1>My page</h1>
+    return (
         <div>
-        {yourLoggedInProfile && (
-            <div>
-                <h2>Welcome, {yourLoggedInProfile.account.username}</h2>
-                <p>Email: {yourLoggedInProfile.account.email}</p>
-            </div>
-        )}
+            <h1>My page</h1>
+            {profile && (
+                <div>
+                    <h2>Welcome, {profile.account.username}</h2>
+                    <p>Email: {profile.account.email}</p>
+                </div>
+            )}
+            <h3>Inventory</h3>
+            {skinDetailStuff && skinDetailStuff.length > 0 ? (
+                <div>
+                    {skinDetailStuff.map((skin) => (
+                        <div key={skin.id}>
+                            <ul>Skin name: {skin.name}</ul>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <p>No skin details available.</p>
+            )}
         </div>
-        <h3>Inventory</h3>
-        <div>
-        { skinDetailStuff.map((skin) => (
-                    <div key={skin.id}>
-                        {/* Render skin information here */}
-                        <ul>Skin name: {skin.name}</ul>
-                        <ul></ul>
-                    </div>
-
-        )
-
-        )
-                }
-        </div>
-    </div>
-  );
-        };
+    );
+};
 
 export default YourProfilePage;
