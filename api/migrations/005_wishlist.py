@@ -4,7 +4,7 @@ steps = [
         CREATE TABLE wishlist(
             id SERIAL PRIMARY KEY,
             account_id INTEGER REFERENCES accounts(id),
-            name VARCHAR(255) NOT NULL
+            name VARCHAR(255) UNIQUE NOT NULL
         );
         """,
         """

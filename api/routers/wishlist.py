@@ -45,14 +45,14 @@ def delete_wishlist(
     return queries.delete_wishlist(wishlist_id, account_data)
 
 
-@router.post("/api/wishlists/{wishlist_id}/skins", response_model=WishlistSkinOut)
+@router.post("/api/wishlists/{wishlist_name}/skins", response_model=WishlistSkinOut)
 def add_skin(
     wishlist_skin: WishlistSkinIn,
-    wishlist_id: int,
+    wishlist_name: str,
     account_data: dict = Depends(authenticator.get_current_account_data),
     queries: WishlistQueries = Depends()
 ):
-    return queries.add_skin_to_wishlist(wishlist_skin, wishlist_id, account_data)
+    return queries.add_skin_to_wishlist(wishlist_skin, wishlist_name, account_data)
 
 
 @router.get("/api/wishlists/{wishlist_id}/skins", response_model=List[WishlistSkinOut])

@@ -66,7 +66,8 @@ export const CS2Rarity = createApi({
         getSkinDetails: builder.query({
             query: (skin_id) => ({
                 url: `/api/skins/${skin_id}`,
-                mode: "no-cors"
+                method:'GET',
+                responseType: 'json',
         })
         }),
 
@@ -108,6 +109,31 @@ export const CS2Rarity = createApi({
         })
 
         }),
+        addToWishlist: builder.mutation({
+          query: (wishlist_name, body) => ({
+            url: `/api/wishlists/${wishlist_name}/skins`,
+            method: "POST",
+            body,
+            credentials: "include",
+          }),
+        }),
+    
+        // removeFromWishlist: builder.mutation({
+        //   query: (itemName) => ({
+        //     url: `/api/wishlists/${wishlist_id}/skins/${id}`,
+        //     method: "DELETE",
+        //     body: { itemName },
+        //     credentials: "include",
+        //   }),
+        // }),
+    
+        // clearWishlist: builder.mutation({
+        //   query: () => ({
+        //     url: `/api/wishlists/${wishlist_id}`,
+        //     method: "DELETE",
+        //     credentials: "include",
+        //   }),
+        // }),
     }),
 
 
@@ -125,4 +151,7 @@ export const {
     useCreateUserInventoryMutation,
     useGetUserInventoryQuery,
     useGetFilteredSkinDetailsQuery,
+    useAddToWishlistMutation,
+    useRemoveFromWishlistMutation,
+    useClearWishlistMutation,
 } = CS2Rarity;
