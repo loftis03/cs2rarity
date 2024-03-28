@@ -78,40 +78,26 @@ class WishlistQueries:
             return False
 
     def add_skin_to_wishlist(
-        self, wishlist_skin: WishlistSkinIn, wishlist_name: str, account_data: dict
+        self, wishlist_skin: WishlistSkinIn, wishlist_id: int, account_data: dict
     ) -> Optional[WishlistSkinOut]:
-        with pool.connection() as conn:
+
+        with pool.connection()as conn:
             with conn.cursor() as cursor:
-            # Construct the SQL query
-                sql_query = """
-                    INSERT INTO wishlist_skins (skin_id, wishlist_id)
-                    SELECT %s, id
-                    FROM wishlist
-                    WHERE name = %s
-                    RETURNING id, wishlist_id;
+                cursor.execute(
                     """
-
-            # Log or print the constructed query string
-                print("SQL Query:", sql_query)
-
-            # Execute the SQL query
-                try:
-                    cursor.execute(sql_query, (wishlist_skin.skin_id, wishlist_name))
-                    new_skin_data = cursor.fetchone()
-                    if new_skin_data:
-                        new_id, wishlist_id = new_skin_data
-                        new_skin = WishlistSkinOut(
-                            id=new_id,
-                            skin_id=wishlist_skin.skin_id,
-                            wishlist_id=wishlist_id
-                        )
-                        return new_skin
-                    else:
-                        return None  # If the skin insertion fails
-                except Exception as e:
-                # Log or print any exceptions raised during query execution
-                    print("Error executing SQL query:", e)
-                    return None
+                    INSERT INTO wishlist_skins (skin_id, wishlist_id)
+                    VALUES (%s, %s)
+                    RETURNING id;
+                    """,
+                    (wishlist_skin.skin_id, wishlist_id),
+                )
+                new_id = cursor.fetchone()[0]
+                new_skin = WishlistSkinOut(
+                    id=new_id,
+                    skin_id=wishlist_skin.skin_id,
+                    wishlist_id=wishlist_id,
+                )
+                return new_skin
 
     def get_all_skins_in_wishlist(
         self, wishlist_id: int, account_data: dict

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useGetSkinListQuery } from "./app/apiSlice";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -9,6 +9,10 @@ const HomePage = () => {
     const itemsPerPage = 10;
     const searchCriteria = useSelector((state) => state.search.value);
     const { data, isLoading, isError } = useGetSkinListQuery();
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery])
 
     if (isLoading) {
         return <p>Loading Skins...</p>;

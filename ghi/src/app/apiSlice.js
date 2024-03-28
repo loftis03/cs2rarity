@@ -110,14 +110,31 @@ export const CS2Rarity = createApi({
 
         }),
         addToWishlist: builder.mutation({
-          query: (wishlist_name, body) => ({
-            url: `/api/wishlists/${wishlist_name}/skins`,
-            method: "POST",
-            body,
+          query: ({ wishlist_id, body }) => {
+              // Assuming the backend expects a flat structure with skin_id directly in the body
+              const payload = {
+                  ...body,
+                  wishlist_id: wishlist_id
+              };
+
+              console.log('Sending to Wishlist:', payload); // Log the actual data being sent
+
+              return {
+                  url: `/api/wishlists/${wishlist_id}/skins`,
+                  method: "POST",
+                  body: payload, // Send the constructed payload
+                  credentials: "include",
+              };
+          },
+        }),
+        getWishlist: builder.query({
+          query: () => ({
+            url: "/api/wishlist",
             credentials: "include",
           }),
+          transformResponse: (response) => response,
+          provideTags: ["Wishlists"],
         }),
-    
         // removeFromWishlist: builder.mutation({
         //   query: (itemName) => ({
         //     url: `/api/wishlists/${wishlist_id}/skins/${id}`,
@@ -126,7 +143,7 @@ export const CS2Rarity = createApi({
         //     credentials: "include",
         //   }),
         // }),
-    
+
         // clearWishlist: builder.mutation({
         //   query: () => ({
         //     url: `/api/wishlists/${wishlist_id}`,
@@ -152,6 +169,7 @@ export const {
     useGetUserInventoryQuery,
     useGetFilteredSkinDetailsQuery,
     useAddToWishlistMutation,
+    useGetWishlistQuery,
     useRemoveFromWishlistMutation,
     useClearWishlistMutation,
 } = CS2Rarity;
