@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 
 class WishlistIn(BaseModel):
@@ -20,3 +21,7 @@ class WishlistSkinOut(BaseModel):
     id: int
     skin_id: str
     wishlist_id: int
+
+
+class WishlistList(BaseModel):
+    wishlist_list: List[int]

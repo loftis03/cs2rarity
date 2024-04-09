@@ -133,8 +133,26 @@ export const CS2Rarity = createApi({
             credentials: "include",
           }),
           transformResponse: (response) => response,
-          provideTags: ["Wishlists"],
+          provideTags: ["wishlist"],
         }),
+        getWishlistSkins: builder.query({
+            query: (wishlist_id) => ({
+              url: `/api/wishlists/${wishlist_id}/skins`,
+              credentials: "include",
+          }),
+          providesTags: ["wishlist"]
+          }),
+          getFilteredWishlistSkins: builder.query({
+            query: (wishlist_list) => ({
+                url: `/api/wishlist_filtered`, // Endpoint URL
+                method: 'POST',  // Use POST method
+                body: wishlist_list, // Send skin_list in the request body
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            }),
         // removeFromWishlist: builder.mutation({
         //   query: (itemName) => ({
         //     url: `/api/wishlists/${wishlist_id}/skins/${id}`,
@@ -170,6 +188,8 @@ export const {
     useGetFilteredSkinDetailsQuery,
     useAddToWishlistMutation,
     useGetWishlistQuery,
+    useGetWishlistSkinsQuery,
+    useGetFilteredWishlistSkinsQuery,
     useRemoveFromWishlistMutation,
     useClearWishlistMutation,
 } = CS2Rarity;

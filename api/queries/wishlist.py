@@ -168,3 +168,33 @@ class WishlistQueries:
                     )
                 else:
                     return None
+
+    def get_filtered_wishlist_skins(self, wishlist_list: list[int]):
+        try:
+            empty_dict = {}
+            for wishlist in wishlist_list:
+                with pool.connection() as conn:
+                    with conn.cursor() as cursor:
+                        cursor.execute(
+                            """
+                            SELECT id, skin_id, wishlist_id
+                            FROM wishlist_skins
+                            WHERE wishlist_id = %s;
+                            """,
+                            [wishlist],
+                        )
+
+                        result = []
+                        for skin in cursor:
+                            skins = WishlistSkinOut(
+                                id=skin[0],
+                                skin_id=skin[1],
+                                wishlist_id=skin[2]
+                            )
+                            result.append(skins)
+                        empty_dict[wishlist] = result
+                        result = []
+            return empty_dict
+
+        except requests.exceptions.RequestException as e:
+            print(f"Error retrieving skins list: {e}")

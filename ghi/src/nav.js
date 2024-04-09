@@ -23,6 +23,10 @@ const Nav = () => {
     navigate("/signup");
   };
 
+  const ProfileButton = () => {
+    navigate("/yourpage");
+  };
+  
   return (
     <nav className="navbar navbar-expand-lg navbar-dark mb-4 shadow sticky-top bg-white">
       <button className="m-2 logo d-flex" onClick={homepageButton}>
@@ -33,10 +37,16 @@ const Nav = () => {
           <div className="" style={{width: '65vw'}}>
           </div>
           <div className="">
+            <button className="btn-transition gradient mx-2" onClick={ProfileButton}>
+              Profile Page
+            </button>
+          </div>
+          <div className="">
             <button className="btn-transition gradient mx-2" onClick={onLogout}>
               Logout
             </button>
           </div>
+
         </>
       ) : (
         <>

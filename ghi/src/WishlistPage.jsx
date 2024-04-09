@@ -1,21 +1,24 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGetLoggedInProfileQuery, useGetUserInventorySkinsQuery, useGetUserInventoryQuery, useGetFilteredSkinDetailsQuery } from "./app/apiSlice";
+import { useGetLoggedInProfileQuery, useGetWishlistQuery, useGetFilteredWishlistSkinsQuery, useGetFilteredSkinDetailsQuery } from "./app/apiSlice";
 
-const YourProfilePage = () => {
+
+
+const WishlistPage = () => {
     const navigate = useNavigate();
     const [profile, setProfile] = useState(null);
-    const [inventoryID, setInventoryID] = useState("");
+    const [wishlistID, setWishlistIDs] = useState();
     const [skinID, setSkinID] = useState([]);
+    const [wishlistOrder, setWishlistOrder] = useState([])
 
     const { data: yourLoggedInProfile, isLoading: profileLoading } = useGetLoggedInProfileQuery();
-    const { data: inventoryStuff, isLoading: inventoryLoading } = useGetUserInventoryQuery();
-    const { data: skinStuff, isLoading: skinLoading } = useGetUserInventorySkinsQuery(inventoryID);
+    const { data: wishlistStuff, isLoading: wishlistLoading } = useGetWishlistQuery();
+    const { data: skinStuff, isLoading: skinLoading } = useGetFilteredWishlistSkinsQuery({"wishlist_list": wishlistID});
     const { data: skinDetailStuff, isLoading: skinDetailLoading, isFetching } = useGetFilteredSkinDetailsQuery({ "skin_list": skinID });
 
 
     const WishlistButton = () => {
-        navigate("/wishlists");
+        navigate("/tbd");
       };
 
 
@@ -26,30 +29,44 @@ const YourProfilePage = () => {
     }, [yourLoggedInProfile, profileLoading]);
 
     useEffect(() => {
-        if (inventoryStuff && !inventoryLoading && inventoryStuff.length > 0) {
-            setInventoryID(inventoryStuff[0].id);
+        if (wishlistStuff && !wishlistLoading) {
+          const ids = wishlistStuff.map(wishlist => wishlist.id);
+          console.log("this is wishlistids", ids)
+          setWishlistIDs(ids);
+          console.log("WishlistID the first one", wishlistID)
         }
-    }, [inventoryStuff, inventoryLoading]);
+      }, [wishlistStuff, wishlistLoading]);
+
 
     useEffect(() => {
-        if (inventoryID && skinStuff && !skinLoading && skinStuff.length > 0) {
-            const ids = skinStuff.map(skin => skin.skin_id);
-            setSkinID(ids);
+        if (wishlistID && wishlistID.length > 0) {
+            console.log("This is skinStuff", skinStuff)
+
         }
-    }, [inventoryID, skinStuff, skinLoading]);
+    })
+
+    useEffect(() => {
+        if (wishlistID && skinStuff && skinStuff.length > 0 && wishlistID.length > 0) {
+            console.log("This is wishlistID too", wishlistID)
+            const ids = skinStuff.map(wishlist => wishlist.skin.skin_id);
+            // To be worked on later. Will probably need to double .map or something
+            setSkinID(ids);
+            console.log("This is wishlist skin stuff", skinStuff)
+        }
+    }, [wishlistID, skinStuff, skinLoading]);
 
     useEffect(() => {
         console.log("Skin IDs:", skinID);
         console.log("Skin Details:", skinDetailStuff);
     }, [skinID, skinDetailStuff]);
 
-    if (profileLoading || inventoryLoading || skinLoading || skinDetailLoading || !skinDetailStuff) {
+    if (profileLoading || wishlistLoading || skinLoading || skinDetailLoading || !skinDetailStuff) {
         return <progress className="progress is-primary" max="100"></progress>;
     }
 
     return (
         <div>
-            <h1>My page</h1>
+            <h1>Wishlists</h1>
             {profile && (
                 <div>
                     <h2>Welcome, {profile.account.username}</h2>
@@ -63,7 +80,7 @@ const YourProfilePage = () => {
               Wishlists
             </button>
           </div>
-            <h3>Inventory</h3>
+            <h3>Wishlists</h3>
             {skinDetailStuff && skinDetailStuff.length > 0 ? (
                 <div>
                     {skinDetailStuff.map((skin) => (
@@ -79,4 +96,4 @@ const YourProfilePage = () => {
     );
 };
 
-export default YourProfilePage;
+export default WishlistPage;
