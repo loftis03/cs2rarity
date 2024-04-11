@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useGetSkinDetailsQuery, useGetWishlistQuery, useAddToWishlistMutation } from "./app/apiSlice";
+import { useGetSkinDetailsQuery, useGetWishlistQuery, useAddToWishlistMutation, useAddToInventoryMutation, useGetUserInventoryQuery } from "./app/apiSlice";
 
 const SkinDetail = () => {
     const { id } = useParams();
@@ -13,8 +13,15 @@ const SkinDetail = () => {
         error: wishlisterror,
         isLoading: isWishlistLoading
     } = useGetWishlistQuery();
+    const {
+        data: inventory,
+        error: inventoryerror,
+        isLoading: isInventoryLoading
+    } = useGetUserInventoryQuery();
+
     const [selectWishlistId, setSelectedWishlistId] = useState("");
     const [buttonText, setButtonText] = useState("Add Skin to Wishlist");
+    const [buttonInventoryText, setInventoryButtonText] = useState("Add Skin to inventory");
     const handleClick = async () => {
         setButtonText("Skin added to Wishlist")
         try{
@@ -29,9 +36,30 @@ const SkinDetail = () => {
         }
     };
 
+
+    const handleInventoryClick = async () => {
+        setInventoryButtonText("Skin added to Inventory")
+        try{
+            console.log("Adding skin to inventory:");
+            console.log(inventory[0].id, "This is what the inventory id looks like");
+            await addSkinToInventory({
+                inventory_id: inventory[0].id,
+                body: {"skin_id": id},
+            });
+            console.log("Skin Added to Inventory successfully!");
+        } catch (error) {
+            console.error("Error occured while adding skin to Inventory:", error)
+        }
+    };
+
+
     const[addSkinToWishlist, {isLoading: isAddingSkin }] =
         useAddToWishlistMutation();
-    if (isSkinLoading || isWishlistLoading) return <div>Loading.....</div>
+
+    const[addSkinToInventory, {isLoading: isAddingInventorySkin }] =
+    useAddToInventoryMutation();
+
+    if (isSkinLoading || isWishlistLoading || isInventoryLoading) return <div>Loading.....</div>
 
     if (isSkinLoading) return <div>Skin is currently loading</div>;
     if (!skinData) return <div>No skin data available</div>;
@@ -68,6 +96,19 @@ const SkinDetail = () => {
                 >
                     {buttonText}
                 </button>
+            </div>
+            <div>
+                <h4>
+                    Add to Inventory
+                </h4>
+                <div>
+                    <button
+                    onClick={handleInventoryClick}
+                    disabled={isAddingInventorySkin}
+                    >
+                        {buttonInventoryText}
+                    </button>
+                </div>
             </div>
         </div>
     );

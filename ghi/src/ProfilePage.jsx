@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetLoggedInProfileQuery, useGetUserInventorySkinsQuery, useGetUserInventoryQuery, useGetFilteredSkinDetailsQuery } from "./app/apiSlice";
+import { Link } from "react-router-dom";
 
 const YourProfilePage = () => {
     const navigate = useNavigate();
@@ -68,7 +69,11 @@ const YourProfilePage = () => {
                 <div>
                     {skinDetailStuff.map((skin) => (
                         <div key={skin.id}>
-                            <ul>Skin name: {skin.name}</ul>
+
+                        <Link to={`/skins/${skin.id}`}>
+                        <img src={skin.image} alt={skin.name} />
+                        <div>{skin.name}</div>
+                        </Link>
                         </div>
                     ))}
                 </div>

@@ -100,9 +100,9 @@ export const CS2Rarity = createApi({
 
         getFilteredSkinDetails: builder.query({
         query: (skin_list) => ({
-            url: `/api/filtered`, // Endpoint URL
-            method: 'POST',  // Use POST method
-            body: skin_list, // Send skin_list in the request body
+            url: `/api/filtered`,
+            method: 'POST',
+            body: skin_list,
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -111,18 +111,15 @@ export const CS2Rarity = createApi({
         }),
         addToWishlist: builder.mutation({
           query: ({ wishlist_id, body }) => {
-              // Assuming the backend expects a flat structure with skin_id directly in the body
               const payload = {
                   ...body,
                   wishlist_id: wishlist_id
               };
-
-              console.log('Sending to Wishlist:', payload); // Log the actual data being sent
-
+              console.log('Sending to Wishlist:', payload);
               return {
                   url: `/api/wishlists/${wishlist_id}/skins`,
                   method: "POST",
-                  body: payload, // Send the constructed payload
+                  body: payload,
                   credentials: "include",
               };
           },
@@ -144,14 +141,33 @@ export const CS2Rarity = createApi({
           }),
           getFilteredWishlistSkins: builder.query({
             query: (wishlist_list) => ({
-                url: `/api/wishlist_filtered`, // Endpoint URL
-                method: 'POST',  // Use POST method
-                body: wishlist_list, // Send skin_list in the request body
+                url: `/api/wishlist_filtered`,
+                method: 'POST',
+                body: wishlist_list,
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
 
+            }),
+
+
+            addToInventory: builder.mutation({
+              query: ({ inventory_id, body }) => {
+                  const payload = {
+                      ...body,
+                      inventory_id: inventory_id
+                  };
+
+                  console.log('Sending to Inventory:', payload);
+
+                  return {
+                      url: `/api/inventory/${inventory_id}/skins`,
+                      method: "POST",
+                      body: payload,
+                      credentials: "include",
+                  };
+              },
             }),
         // removeFromWishlist: builder.mutation({
         //   query: (itemName) => ({
@@ -190,6 +206,7 @@ export const {
     useGetWishlistQuery,
     useGetWishlistSkinsQuery,
     useGetFilteredWishlistSkinsQuery,
+    useAddToInventoryMutation,
     useRemoveFromWishlistMutation,
-    useClearWishlistMutation,
+    useClearWishlistMutation
 } = CS2Rarity;

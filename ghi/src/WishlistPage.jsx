@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetLoggedInProfileQuery, useGetWishlistQuery, useGetFilteredWishlistSkinsQuery, useGetFilteredSkinDetailsQuery } from "./app/apiSlice";
+import { Link } from "react-router-dom";
 
 
 
@@ -46,14 +47,17 @@ const WishlistPage = () => {
     })
 
     useEffect(() => {
-        if (wishlistID && skinStuff && skinStuff.length > 0 && wishlistID.length > 0) {
-            console.log("This is wishlistID too", wishlistID)
-            const ids = skinStuff.map(wishlist => wishlist.skin.skin_id);
-            // To be worked on later. Will probably need to double .map or something
+        if (skinStuff && Object.keys(skinStuff).length > 0) {
+            const ids = Object.keys(skinStuff).reduce((acc, wishlistId) => {
+                const skins = skinStuff[wishlistId];
+                const skinIds = skins.map(skin => skin.skin_id);
+                return [...acc, ...skinIds];
+            }, []);
+
             setSkinID(ids);
-            console.log("This is wishlist skin stuff", skinStuff)
+            console.log("Extracted skin IDs:", ids);
         }
-    }, [wishlistID, skinStuff, skinLoading]);
+    }, [skinStuff]);
 
     useEffect(() => {
         console.log("Skin IDs:", skinID);
@@ -73,27 +77,43 @@ const WishlistPage = () => {
                     <p>Email: {profile.account.email}</p>
                 </div>
             )}
-            <div className="" style={{width: '65vw'}}>
-          </div>
-          <div className="">
-            <button className="btn-transition gradient mx-2" onClick={WishlistButton}>
-              Wishlists
-            </button>
-          </div>
+            <div>
+                <button className="btn-transition gradient mx-2" onClick={WishlistButton}>
+                    Wishlists
+                </button>
+            </div>
             <h3>Wishlists</h3>
-            {skinDetailStuff && skinDetailStuff.length > 0 ? (
-                <div>
-                    {skinDetailStuff.map((skin) => (
-                        <div key={skin.id}>
-                            <ul>Skin name: {skin.name}</ul>
-                        </div>
-                    ))}
-                </div>
+            {wishlistStuff && Object.keys(skinStuff ?? {}).length > 0 ? (
+                wishlistStuff.map((wishlist) => (
+                    <div key={wishlist.id}>
+                        <h4>Wishlist: {wishlist.name}</h4>
+                        {(skinStuff?.[wishlist.id] ?? []).length > 0 ? (
+                            <ul>
+                                {skinStuff[wishlist.id].map((skin) => {
+                                    const detailedSkin = skinDetailStuff?.find(detail => detail.id === skin.skin_id);
+                                    return detailedSkin ? (
+                                        <ul key={skin.skin_id}>
+                                            <div>
+
+                                                <Link to={`/skins/${detailedSkin.id}`}>
+                                                    <img src={detailedSkin.image} alt={detailedSkin.name} />
+                                                    <div>{detailedSkin.name}</div>
+                                                </Link>
+                                            </div>
+                                                                    </ul>
+                                    ) : null;  // Or handle the case where there is no detailed info
+                                })}
+                            </ul>
+                        ) : (
+                            <p>No skins available for this wishlist.</p>
+                        )}
+                    </div>
+                ))
             ) : (
-                <p>No skin details available.</p>
+                <p>No wishlist or skin details available.</p>
             )}
         </div>
     );
-};
+            };
 
 export default WishlistPage;
