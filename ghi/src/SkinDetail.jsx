@@ -67,11 +67,17 @@ const SkinDetail = () => {
     const { name, description, image } = skinData;
 
     return (
-        <div>
+        <div style={{
+            borderRadius: "5px",
+            padding: "20px",
+            margin: "20px auto",
+            maxWidth: "600px",
+            backgroundColor: "#f9f9f9"
+        }}>
             <div>
                 <img src={image} alt={name} />
             </div>
-            <div>{name}</div>
+            <div style={{ fontWeight: "bold", fontSize: "1.5em" }}>{name}</div> {/* Apply styles here */}
             <div>{description}</div>
             <div>
                 <h4>Add to Wishlist</h4>

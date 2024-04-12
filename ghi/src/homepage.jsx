@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useGetSkinListQuery } from "./app/apiSlice";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const HomePage = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const itemsPerPage = 15;
     const searchCriteria = useSelector((state) => state.search.value);
     const { data, isLoading, isError } = useGetSkinListQuery();
 
@@ -47,25 +47,26 @@ const HomePage = () => {
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
-    console.log(paginatedData)
 
     return (
-        <div className="container">
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             <input
                 type="text"
                 placeholder="Search skins..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
             />
-            {paginatedData.map((skin) => (
-                <div key={skin.id}>
-                    <Link to={`/skins/${skin.id}`}>
-                        <img src={skin.image} alt={skin.name} />
-                        <div>{skin.name}</div>
-                    </Link>
-                </div>
-            ))}
-            <div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
+                {paginatedData.map((skin) => (
+                    <div key={skin.id} style={{ padding: '10px', textAlign: 'center' }}>
+                        <Link to={`/skins/${skin.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <img src={skin.image} alt={skin.name} style={{ maxWidth: '100%' }} />
+                            <div style={{ textDecoration: 'none' }}>{skin.name}</div>
+                        </Link>
+                    </div>
+                ))}
+            </div>
+            <div style={{ marginTop: '20px', marginBottom: '40px' }}>
                 <button onClick={handlePrevPage} disabled={currentPage === 1}>
                     Previous
                 </button>

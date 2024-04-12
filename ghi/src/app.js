@@ -9,6 +9,7 @@ import MyPage from "./MyPage.jsx";
 import ProtectedRoutes from "./ProtectedRoutes.js";
 import YourProfilePage from "./ProfilePage.jsx";
 import WishlistPage from "./WishlistPage.jsx";
+import CreateWishlistPage from "./CreateWishlist.jsx";
 // import "./App.css";
 // import Nav from "./nav.js";
 
@@ -28,7 +29,7 @@ const App = () => {
         <Route path="/yourpage/" element={<ProtectedRoutes child={<YourProfilePage />} />}/>
         <Route path="/skins/:id" element={<SkinDetail />}/>
         <Route path="/wishlists" element={<WishlistPage />}/>
-
+        <Route path="/createwishlist" element={<CreateWishlistPage />}/>
       </Routes>
     </BrowserRouter>
   );

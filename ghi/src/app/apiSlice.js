@@ -169,6 +169,15 @@ export const CS2Rarity = createApi({
                   };
               },
             }),
+            createWishlist: builder.mutation({
+              query: (body) => ({
+                url: "api/wishlist",
+                method: "POST",
+                body,
+                credentials: "include",
+              }),
+              invalidatesTags: ["Wishlist"],
+            }),
         // removeFromWishlist: builder.mutation({
         //   query: (itemName) => ({
         //     url: `/api/wishlists/${wishlist_id}/skins/${id}`,
@@ -207,6 +216,7 @@ export const {
     useGetWishlistSkinsQuery,
     useGetFilteredWishlistSkinsQuery,
     useAddToInventoryMutation,
+    useCreateWishlistMutation,
     useRemoveFromWishlistMutation,
     useClearWishlistMutation
 } = CS2Rarity;
