@@ -178,22 +178,26 @@ export const CS2Rarity = createApi({
               }),
               invalidatesTags: ["Wishlist"],
             }),
-        // removeFromWishlist: builder.mutation({
-        //   query: (itemName) => ({
-        //     url: `/api/wishlists/${wishlist_id}/skins/${id}`,
-        //     method: "DELETE",
-        //     body: { itemName },
-        //     credentials: "include",
-        //   }),
-        // }),
-
-        // clearWishlist: builder.mutation({
-        //   query: () => ({
-        //     url: `/api/wishlists/${wishlist_id}`,
-        //     method: "DELETE",
-        //     credentials: "include",
-        //   }),
-        // }),
+            removeFromWishlist: builder.mutation({
+              query: ({ wishlist_id, id }) => ({
+                  url: `/api/wishlists/${wishlist_id}/skins/${id}`,
+                  method: "DELETE",
+                  credentials: "include",
+              }),
+              // invalidatesTags: ['Wishlist'], // Optionally, you can specify tags to invalidate cached data
+              // onError: (error, { wishlist_id, id }) => {
+              //     console.error("Error occurred while removing skin from wishlist:", error);
+              //     // Optionally, you can handle specific error codes or display error messages to the user
+              // },
+          }),
+            clearWishlist: builder.mutation({
+              query: (wishlist_id) => ({
+                url: `/api/wishlists/${wishlist_id}`,
+                method: "DELETE",
+                credentials: "include",
+              }),
+              invalidatesTags: ["Wishlist"],
+            }),
     }),
 
 

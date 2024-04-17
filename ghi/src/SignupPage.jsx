@@ -8,6 +8,7 @@ const SignupPage = () => {
   const [CreateUserInventory] = useCreateUserInventoryMutation();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
+  const [profile_picture, setProfilePicture]= useState("");
   const [password, setPassword] = useState("");
   const [passwordConf, setPasswordConf] = useState("");
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const SignupPage = () => {
       return alert("Passwords do not match");
     } else {
       try {
-        await signup({ email, username, password }).unwrap();
+        await signup({ email, username, profile_picture, password }).unwrap();
         await CreateUserInventory({ name: "inventory" });
         setTimeout(() => {
           navigate("/");
@@ -73,6 +74,19 @@ const SignupPage = () => {
                 className="form-control"
               />
               <label htmlFor="username">Username</label>
+            </div>
+            <div className="form-floating mb-3">
+              <input
+              onChange={(e) => setProfilePicture(e.target.value)}
+              value={profile_picture}
+              placeholder="ProfilePicture"
+              required
+              type="text"
+              name="profile_picture"
+              id="profile_picture"
+              className="form-control"
+              />
+              <label htmlFor="profile_picture">Profile Picture</label>
             </div>
             <div className="form-floating mb-3">
               <input

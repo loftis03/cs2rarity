@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useGetSkinDetailsQuery, useGetWishlistQuery, useAddToWishlistMutation, useAddToInventoryMutation, useGetUserInventoryQuery } from "./app/apiSlice";
+import "./style.css";
+import "./test.css";
 
 const SkinDetail = () => {
     const { id } = useParams();
@@ -74,10 +76,12 @@ const SkinDetail = () => {
             maxWidth: "600px",
             backgroundColor: "#f9f9f9"
         }}>
-            <div>
-                <img src={image} alt={name} />
+            <div id="picture">
+                <div className="avatar">
+                    <img src={image} alt={name} />
+                </div>
             </div>
-            <div style={{ fontWeight: "bold", fontSize: "1.5em" }}>{name}</div> {/* Apply styles here */}
+            <div className="center"style={{ fontWeight: "bold", fontSize: "1.5em" }}>{name}</div> {/* Apply styles here */}
             <div>{description}</div>
             <div>
                 <h4>Add to Wishlist</h4>
@@ -91,7 +95,6 @@ const SkinDetail = () => {
                         {wishlists && wishlists.map((wishlist) => (
                                 <option key={wishlist.id} value={wishlist.id}>
                                     {wishlist.name}
-                                    {console.log(wishlist.id)}
                                 </option>
                             ))}
                     </select>

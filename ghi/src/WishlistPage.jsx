@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGetLoggedInProfileQuery, useGetWishlistQuery, useGetFilteredWishlistSkinsQuery, useGetFilteredSkinDetailsQuery } from "./app/apiSlice";
+import { useGetLoggedInProfileQuery, useGetWishlistQuery, useGetFilteredWishlistSkinsQuery, useGetFilteredSkinDetailsQuery, useClearWishlistMutation, useRemoveFromWishlistMutation } from "./app/apiSlice";
 import { Link } from "react-router-dom";
 import profilePicture from "./Counter-Strike_2_29.png";
 
@@ -9,13 +9,32 @@ const WishlistPage = () => {
     const [profile, setProfile] = useState(null);
     const [wishlistID, setWishlistIDs] = useState();
     const [skinID, setSkinID] = useState([]);
+    const [clearwishlistmutation] = useClearWishlistMutation();
+    const [deleteskinfromwishlist] = useRemoveFromWishlistMutation();
     const [wishlistOrder, setWishlistOrder] = useState([])
-    const [currentPage, setCurrentPage] = useState(1); 
+    const [currentPage, setCurrentPage] = useState(1);
 
     const { data: yourLoggedInProfile, isLoading: profileLoading } = useGetLoggedInProfileQuery();
     const { data: wishlistStuff, isLoading: wishlistLoading } = useGetWishlistQuery();
     const { data: skinStuff, isLoading: skinLoading } = useGetFilteredWishlistSkinsQuery({"wishlist_list": wishlistID});
     const { data: skinDetailStuff, isLoading: skinDetailLoading, isFetching } = useGetFilteredSkinDetailsQuery({ "skin_list": skinID });
+
+    const handleClearWishlist = async (wishlist_id) => {
+        try{
+            await clearwishlistmutation(wishlist_id);
+            window.location.reload();
+        } catch(error){
+            console.error("Error occured while deleting the wishlist", error);
+        }
+    };
+    const handleDeleteSkinFromWishlist = async (wishlistId, skinId) => {
+        try {
+            await deleteskinfromwishlist({ wishlist_id: wishlistId, id: `${skinId}` });
+            window.location.reload();
+        } catch (error) {
+            console.error("Error occurred while deleting the skin from the wishlist", error);
+        }
+    };
 
     useEffect(() => {
         if (yourLoggedInProfile && !profileLoading) {
@@ -42,6 +61,7 @@ const WishlistPage = () => {
         }
     }, [skinStuff]);
 
+
     if (profileLoading || wishlistLoading || skinLoading || skinDetailLoading || !skinDetailStuff) {
         return <progress className="progress is-primary" max="100"></progress>;
     }
@@ -51,9 +71,10 @@ const WishlistPage = () => {
             <div className="row">
                 <div className="col-md-6 offset-md-3">
                     <div className="text-center">
-                        <img src={profilePicture} alt="Profile" style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover', marginBottom: '10px' }} />
+
                         {profile && (
                             <div>
+                                <img src={profile.account.profile_picture} alt="Profile" style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover', marginBottom: '10px' }} />
                                 <h2>Welcome, {profile.account.username}</h2>
                                 <p>Email: {profile.account.email}</p>
                             </div>
@@ -64,17 +85,26 @@ const WishlistPage = () => {
                         <h1>Wishlists</h1>
                         {wishlistStuff.map((wishlist) => (
                             <div key={wishlist.id}>
-                                <h4>Wishlist: {wishlist.name}</h4>
+                                <div>
+                                 <h4>Wishlist: {wishlist.name}</h4>
+                                 <button
+                                 onClick={() => handleClearWishlist(wishlist.id)}
+                                 refresh="true"
+                                 >
+                                    Delete Wishlist
+                                 </button>
+                                </div>
                                 <div className="row">
                                     {(skinStuff?.[wishlist.id] ?? []).length > 0 ? (
                                         skinStuff[wishlist.id].map((skin) => {
                                             const detailedSkin = skinDetailStuff?.find(detail => detail.id === skin.skin_id);
                                             return detailedSkin ? (
-                                                <div key={skin.skin_id} className="col-md-4 mb-3">
+                                                <div key={skin.skin_id} className="large col-md-4 mb-3">
                                                     <Link to={`/skins/${detailedSkin.id}`} className="text-decoration-none text-dark">
                                                         <img src={detailedSkin.image} alt={detailedSkin.name} style={{ maxWidth: '100%' }} />
                                                         <div style={{ textDecoration: 'none' }}>{detailedSkin.name}</div>
                                                     </Link>
+                                                    <button onClick={() => handleDeleteSkinFromWishlist(wishlist.id, skin.skin_id)}>Delete Skin</button>
                                                 </div>
                                             ) : null;
                                         })

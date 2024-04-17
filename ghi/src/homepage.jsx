@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useGetSkinListQuery } from "./app/apiSlice";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import "./style.css";
 
 const HomePage = () => {
     const [searchQuery, setSearchQuery] = useState("");
@@ -49,16 +50,18 @@ const HomePage = () => {
     );
 
     return (
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <input
-                type="text"
-                placeholder="Search skins..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto' } }>
+            <div className="center">
+                <input
+                    type="text"
+                    placeholder="Search skins..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </div>
+            <div  style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
                 {paginatedData.map((skin) => (
-                    <div key={skin.id} style={{ padding: '10px', textAlign: 'center' }}>
+                    <div className="large text" key={skin.id} style={{ padding: '10px', textAlign: 'center' }}>
                         <Link to={`/skins/${skin.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                             <img src={skin.image} alt={skin.name} style={{ maxWidth: '100%' }} />
                             <div style={{ textDecoration: 'none' }}>{skin.name}</div>
@@ -66,12 +69,12 @@ const HomePage = () => {
                     </div>
                 ))}
             </div>
-            <div style={{ marginTop: '20px', marginBottom: '40px' }}>
-                <button onClick={handlePrevPage} disabled={currentPage === 1}>
+            <div className="center"style={{ marginTop: '20px', marginBottom: '40px' }}>
+                <button className="selector-button" onClick={handlePrevPage} disabled={currentPage === 1}>
                     Previous
                 </button>
-                <span>{`Page ${currentPage} of ${totalPages}`}</span>
-                <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+                <span >{`Page ${currentPage} of ${totalPages}`}</span>
+                <button className="selector-button" onClick={handleNextPage} disabled={currentPage === totalPages}>
                     Next
                 </button>
             </div>
