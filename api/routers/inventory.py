@@ -53,7 +53,7 @@ def get_all_skins(
 @router.delete("/api/inventory/{inventory_id}/skins/{id}", response_model=bool)
 def delete_skin(
     inventory_id: int,
-    id: int,
+    id: str,
     account_data: dict = Depends(authenticator.get_current_account_data),
     queries: InventoryQueries = Depends()
 ):

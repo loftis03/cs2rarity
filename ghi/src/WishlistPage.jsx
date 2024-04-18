@@ -74,13 +74,13 @@ const WishlistPage = () => {
 
                         {profile && (
                             <div>
-                                <img src={profile.account.profile_picture} alt="Profile" style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover', marginBottom: '10px' }} />
+                                <img src={profile.account.profile_picture} alt="Profile" style={{ width: '300px', height: '300px', borderRadius: '50%', objectFit: 'cover', marginBottom: '10px' }} />
                                 <h2>Welcome, {profile.account.username}</h2>
                                 <p>Email: {profile.account.email}</p>
                             </div>
                         )}
                         <Link to="/yourpage">
-                            <button className="btn-transition gradient mx-2">Profile Page</button>
+                            <button class="button-78" role="button">Profile Page</button>
                         </Link>
                         <h1>Wishlists</h1>
                         {wishlistStuff.map((wishlist) => (
@@ -88,6 +88,7 @@ const WishlistPage = () => {
                                 <div>
                                  <h4>Wishlist: {wishlist.name}</h4>
                                  <button
+                                 className="button-78" role="button"
                                  onClick={() => handleClearWishlist(wishlist.id)}
                                  refresh="true"
                                  >
@@ -104,7 +105,7 @@ const WishlistPage = () => {
                                                         <img src={detailedSkin.image} alt={detailedSkin.name} style={{ maxWidth: '100%' }} />
                                                         <div style={{ textDecoration: 'none' }}>{detailedSkin.name}</div>
                                                     </Link>
-                                                    <button onClick={() => handleDeleteSkinFromWishlist(wishlist.id, skin.skin_id)}>Delete Skin</button>
+                                                    <button class="button-78" role="button" onClick={() => handleDeleteSkinFromWishlist(wishlist.id, skin.skin_id)}>Delete Skin</button>
                                                 </div>
                                             ) : null;
                                         })

@@ -97,7 +97,7 @@ class InventoryQueries:
                 return result
 
     def remove_skin_from_inventory(
-            self, inventory_id: int, id: int, account_data: dict
+            self, inventory_id: int, id: str, account_data: dict
     ) -> bool:
         try:
             logged_in_account_id = account_data["id"]
@@ -107,7 +107,7 @@ class InventoryQueries:
                         """
                         DELETE FROM inventory_skins
                         WHERE inventory_id = %s
-                        AND id = %s
+                        AND skin_id = %s
                         AND inventory_id IN (SELECT id FROM inventory WHERE account_id = %s)
                         """,
                         [inventory_id, id, logged_in_account_id],
