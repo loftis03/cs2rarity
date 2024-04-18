@@ -10,7 +10,6 @@ const YourProfilePage = () => {
     const [inventoryID, setInventoryID] = useState("");
     const [deleteskinfrominventory] = useRemoveFromInventoryMutation();
     const [skinID, setSkinID] = useState([]);
-
     const { data: yourLoggedInProfile, isLoading: profileLoading } = useGetLoggedInProfileQuery();
     const { data: inventoryStuff, isLoading: inventoryLoading } = useGetUserInventoryQuery();
     const { data: skinStuff, isLoading: skinLoading } = useGetUserInventorySkinsQuery(inventoryID);
@@ -31,6 +30,12 @@ const YourProfilePage = () => {
             console.error("Error occurred while deleting the skin from your inventory", error);
         }
     };
+
+    useEffect(() => {
+        if (!yourLoggedInProfile && !profileLoading)  {
+            navigate("/")
+        }
+    }, [yourLoggedInProfile]);
 
     useEffect(() => {
         if (yourLoggedInProfile && !profileLoading) {
@@ -54,7 +59,7 @@ const YourProfilePage = () => {
 
 
 
-    if (profileLoading || inventoryLoading || skinLoading || skinDetailLoading || !skinDetailStuff) {
+    if (profileLoading || !profile || inventoryLoading || skinLoading || skinDetailLoading || !skinDetailStuff) {
         return <progress className="progress is-primary" max="100"></progress>;
     }
 

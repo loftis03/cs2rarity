@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetLoggedInProfileQuery, useGetWishlistQuery, useGetFilteredWishlistSkinsQuery, useGetFilteredSkinDetailsQuery, useClearWishlistMutation, useRemoveFromWishlistMutation } from "./app/apiSlice";
 import { Link } from "react-router-dom";
-import profilePicture from "./Counter-Strike_2_29.png";
 
 const WishlistPage = () => {
     const navigate = useNavigate();
@@ -13,11 +12,11 @@ const WishlistPage = () => {
     const [deleteskinfromwishlist] = useRemoveFromWishlistMutation();
     const [wishlistOrder, setWishlistOrder] = useState([])
     const [currentPage, setCurrentPage] = useState(1);
-
     const { data: yourLoggedInProfile, isLoading: profileLoading } = useGetLoggedInProfileQuery();
     const { data: wishlistStuff, isLoading: wishlistLoading } = useGetWishlistQuery();
     const { data: skinStuff, isLoading: skinLoading } = useGetFilteredWishlistSkinsQuery({"wishlist_list": wishlistID});
     const { data: skinDetailStuff, isLoading: skinDetailLoading, isFetching } = useGetFilteredSkinDetailsQuery({ "skin_list": skinID });
+
 
     const handleClearWishlist = async (wishlist_id) => {
         try{
@@ -37,10 +36,12 @@ const WishlistPage = () => {
     };
 
     useEffect(() => {
-        if (yourLoggedInProfile && !profileLoading) {
+        if (!profileLoading && !yourLoggedInProfile) {
+            navigate("/");
+        } else if (!profileLoading && yourLoggedInProfile) {
             setProfile(yourLoggedInProfile);
         }
-    }, [yourLoggedInProfile, profileLoading]);
+    }, [yourLoggedInProfile, profileLoading, navigate]);
 
     useEffect(() => {
         if (wishlistStuff && !wishlistLoading) {
@@ -62,7 +63,7 @@ const WishlistPage = () => {
     }, [skinStuff]);
 
 
-    if (profileLoading || wishlistLoading || skinLoading || skinDetailLoading || !skinDetailStuff) {
+    if (profileLoading || !profile || wishlistLoading || skinLoading || skinDetailLoading || !skinDetailStuff) {
         return <progress className="progress is-primary" max="100"></progress>;
     }
 
